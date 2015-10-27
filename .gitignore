@@ -1,0 +1,17 @@
+# Compiled source #
+###################
+*.o
+*.so
+*.pyc
+
+# Logs and temporaries #
+########################
+*.log
+*~
+.coverage
+
+# Folders #
+###########
+build/
+brainomics2.egg-info/
+__pycache__/

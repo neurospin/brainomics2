@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# copyright 2014 nsap, all rights reserved.
-# contact http://www.logilab.fr -- mailto:antoine.grigis@cea.fr
+# contact http://www.logilab.fr
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +13,9 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
+# copyright 2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2013 CEA (Saclay, FRANCE), all rights reserved.
+# contact http://www.logilab.fr -- mailto:contact@logilab.fr
 
 """cubicweb-brainomics2 postcreate script, executed at instance creation time or when
 the cube is added to an existing instance.

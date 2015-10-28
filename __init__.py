@@ -1,4 +1,4 @@
-"""cubicweb-brainomics business logic cube
+"""cubicweb-brainomics2 business logic cube
 
 cubicweb cube for the schema definition
 """

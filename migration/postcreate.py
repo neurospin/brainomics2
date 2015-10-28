@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""cubicweb-piws postcreate script, executed at instance creation time or when
+"""cubicweb-brainomics2 postcreate script, executed at instance creation time or when
 the cube is added to an existing instance.
 
 You could setup site properties or a workflow here for example.

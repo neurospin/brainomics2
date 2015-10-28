@@ -1,5 +1,5 @@
 # pylint: disable=W0622
-"""cubicweb-euaims business logic cube information"""
+"""cubicweb-brainomics2 business logic cube information"""
 
 modname = 'brainomics2'
 distname = 'cubicweb-brainomics2'

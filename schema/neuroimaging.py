@@ -31,7 +31,6 @@ from yams.buildobjs import (EntityType,
                             RichString,
                             Int,
                             Float,
-                            Boolean,
                             Bytes)
 
 ### IMAGE AND SCAN ############################################################
@@ -66,7 +65,6 @@ class MRIData(EntityType):
     # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
-    # tr = Float(indexed=False)
     tr = String(maxsize=64, required=True)
     te = Float(indexed=False)
     field = String(maxsize=10, indexed=False)
@@ -81,13 +79,13 @@ class DMRIData(EntityType):
     # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
-    # tr = Float(required=True, indexed=False)
     tr = String(maxsize=64, required=True)
     te = Float(required=True, indexed=False)
     shape_x = Int(indexed=False)
     shape_y = Int(indexed=False)
     shape_z = Int(indexed=False)
     field = String(maxsize=10, indexed=False)
+
 
 class FMRIData(EntityType):
     shape_x = Float()
@@ -98,10 +96,10 @@ class FMRIData(EntityType):
     voxel_res_z = Float(required=True)
     fov_x = Float()
     fov_y = Float()
-    # tr = Float()  # add required=True in next major revision
     tr = String(maxsize=64, required=True)
     te = Float()
     field = String(maxsize=10, indexed=True)
+
 
 # EEGData entity
 class EEGData(EntityType):
@@ -109,6 +107,7 @@ class EEGData(EntityType):
     sampling_rate = String()
     temperature = String()
     number_of_channels = String(maxsize=8)
+
 
 # ETData entity
 class ETData(EntityType):

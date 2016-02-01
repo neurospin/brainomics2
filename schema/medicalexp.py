@@ -26,7 +26,6 @@
 
 
 from yams.buildobjs import (EntityType,
-                            RelationDefinition,
                             SubjectRelation,
                             String,
                             RichString,
@@ -124,7 +123,6 @@ class Protocol(EntityType):
     identifier = String(required=True, unique=True, indexed=True, maxsize=64)
     name = String(maxsize=256, required=True, unique=True)
     study = SubjectRelation('Study', cardinality='1*', inlined=False)
-    # subjects = SubjectRelation('Subject', cardinality="**", inlined=False)
     assessments = SubjectRelation('Assessment', cardinality="*?", inlined=False)
 
 
@@ -201,6 +199,7 @@ class ScoreDefinition(EntityType):
     possible_values = String(maxsize=256, fulltextindexed=True)
     score_values = SubjectRelation('ScoreValue', cardinality='*1', inlined=False)
 
+
 # XXX Two different etypes for string/numerical values ?
 class ScoreValue(EntityType):
     """ A score value """
@@ -208,10 +207,5 @@ class ScoreValue(EntityType):
     text = String(maxsize=2048, fulltextindexed=True)
     value = Float(indexed=True)
     datetime = Date()
-    # scoregroups = SubjectRelation('ScoreGroup', cardinality='**')
 
-# class ScoreGroup(EntityType):
-#     """ A group of score values that should be considered together """
-#     identifier = String(required=True, unique=True, indexed=True, maxsize=64)
-#     scores = SubjectRelation('ScoreValue', cardinality='**')
 

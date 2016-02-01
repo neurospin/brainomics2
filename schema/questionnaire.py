@@ -28,9 +28,6 @@ from yams.buildobjs import (EntityType,
                             SubjectRelation,
                             String,
                             Int,
-                            Float,
-                            Date,
-                            Boolean,
                             RichString)
 
 
@@ -39,7 +36,6 @@ class QuestionnaireRun(EntityType):
     subject_age = Int()
     iteration = Int(indexed=True)
     questionnaire = SubjectRelation('Questionnaire', cardinality='1*', inlined=False)
-    # assessment = SubjectRelation('Assessment', cardinality='1*', inlined=False)
     subject = SubjectRelation('Subject', cardinality='1*', inlined=False)
     result = SubjectRelation("File", cardinality="1?", inlined=False,
                              composite="subject")

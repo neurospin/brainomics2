@@ -28,9 +28,6 @@ from yams.buildobjs import (EntityType,
                             SubjectRelation,
                             String,
                             Int,
-                            Float,
-                            Date,
-                            Boolean,
                             RichString)
 
 
@@ -39,9 +36,10 @@ class QuestionnaireRun(EntityType):
     subject_age = Int()
     iteration = Int(indexed=True)
     questionnaire = SubjectRelation('Questionnaire', cardinality='1*', inlined=False)
-    assessment = SubjectRelation('Assessment', cardinality='1*', inlined=False)
     subject = SubjectRelation('Subject', cardinality='1*', inlined=False)
-
+    result = SubjectRelation("File", cardinality="1?", inlined=False,
+                             composite="subject")
+    study = SubjectRelation('Study', cardinality='1*', inlined=False)
 
 class Questionnaire(EntityType):
     name = String(required=True, unique=True, maxsize=256)
@@ -65,10 +63,10 @@ class Answer(EntityType):
     value = String(indexed=True)
     type = String(indexed=True)
     question = SubjectRelation('Question', cardinality='**', inlined=False)
-    questionnaire_run = SubjectRelation('QuestionnaireRun', cardinality='1*', inlined=True)
+    questionnaire_run = SubjectRelation('QuestionnaireRun', cardinality='1*', inlined=False)
 
 # XXX to remove
 class OpenAnswer(EntityType):
     value = String(required=True)
     identifier = String(maxsize=64, indexed=True, unique=True)
-    questionnaire_run = SubjectRelation("QuestionnaireRun", cardinality="1*", inlined=True)
+    questionnaire_run = SubjectRelation("QuestionnaireRun", cardinality="1*", inlined=False)

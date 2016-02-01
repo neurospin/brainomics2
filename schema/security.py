@@ -22,7 +22,9 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from yams.buildobjs import EntityType
+from yams.buildobjs import EntityType, SubjectRelation
+from cubicweb.schema import ERQLExpression, RRQLExpression
+
 
 # Cubes import
 from cubes.brainomics2.schema.medicalexp import Assessment
@@ -41,7 +43,7 @@ from cubes.brainomics2.schema.medicalexp import Protocol
 from cubes.brainomics2.schema.medicalexp import ScoreDefinition
 
 from cubes.brainomics2.schema.neuroimaging import Scan
-from cubes.brainomics2.schema.neuroimaging import DMRIData
+from cubes.brainomics2.schema.neuroimaging import DMRIData, EEGData, ETData
 from cubes.brainomics2.schema.neuroimaging import MRIData
 from cubes.brainomics2.schema.neuroimaging import FMRIData
 
@@ -58,14 +60,43 @@ from cubes.brainomics2.schema.genomics import Gene
 from cubes.brainomics2.schema.genomics import Chromosome
 
 from cubes.brainomics2.schema.file import File
+from yams.buildobjs import RelationDefinition
+###############################################################################
+# Set permissions
+###############################################################################
+
+# CWGROUP
+
+
+class can_read(RelationDefinition):
+    subject = "CWGroup"
+    object = "Assessment"
+    cardinality = "*?"
+
+
+class can_update(RelationDefinition):
+    subject = "CWGroup"
+    object = "Assessment"
+    cardinality = "*?"
+
+# RIGHTS
+
+
+class in_assessment(RelationDefinition):
+    subject = ("ProcessingRun", "ExternalFile", "Scan", "FileSet", "FMRIData", 
+               "DMRIData", "EEGData", "ETData", "MRIData", "ScoreValue", 
+               "QuestionnaireRun")
+    object = "Assessment"
+    cardinality = "1*"
+    inlined = True
+
 
 ###############################################################################
 # Set permissions
 ###############################################################################
 
-
 ENTITIES = [
-    Scan, FMRIData, DMRIData, MRIData, FileSet, ExternalFile, Answer,
+    Scan, FMRIData, DMRIData, EEGData, ETData, MRIData, FileSet, ExternalFile,
     ScoreValue, ProcessingRun, QuestionnaireRun, OpenAnswer, GenomicMeasure]
 
 

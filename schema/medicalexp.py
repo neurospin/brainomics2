@@ -44,7 +44,7 @@ _ = unicode
 
 class Subject(EntityType):
     """ The subject """
-    identifier = String(required=True, unique=True, fulltextindexed=True,
+    code_in_study = String(required=True, unique=True, fulltextindexed=True,
                         indexed=True, maxsize=64)
     surname = String(fulltextindexed=True, maxsize=256)
     gender = String(required=True, indexed=True,
@@ -53,13 +53,15 @@ class Subject(EntityType):
                         vocabulary=('right', 'left', 'ambidextrous', 'mixed', 'unknown'))
     study = SubjectRelation('Study', cardinality='1*')
     subject_groups = SubjectRelation('SubjectGroup', cardinality='**')
-    related_diagnostics = SubjectRelation('Diagnostic', cardinality='**', composite='subject')
+    diagnostics = SubjectRelation('Diagnostic', cardinality='**', composite='subject')
     genomic_measures = SubjectRelation("GenomicMeasure", cardinality="**", inlined=False)
     assessments = SubjectRelation("Assessment", cardinality="**", inlined=False)
     scans = SubjectRelation("Scan", cardinality="*1", inlined=False)
     questionnaire_runs = SubjectRelation("QuestionnaireRun", cardinality="*1", inlined=False)
     processing_runs = SubjectRelation("ProcessingRun", cardinality="*1", inlined=False)
     center = SubjectRelation("Center", cardinality="?*", inlined=False)
+    position_in_family = String(maxsize=64)
+    subjectgroups = SubjectRelation('SubjectGroup', cardinality='**')
 
 
 class Study(EntityType):
@@ -72,14 +74,17 @@ class Study(EntityType):
     scans = SubjectRelation("Scan", cardinality="*1", inlined=False)
     questionnaire_runs = SubjectRelation("QuestionnaireRun", cardinality="*1", inlined=False)
     processing_runs = SubjectRelation("ProcessingRun", cardinality="*1", inlined=False)
+    subjectgroups = SubjectRelation('SubjectGroup', cardinality='*1')
+    protocols = SubjectRelation('Protocol', cardinality='*1')
 
 
 class SubjectGroup(EntityType):
     """ Group of subject """
     identifier = String(required=True, unique=True, indexed=True, maxsize=64)
     name = String(maxsize=64, required=True, indexed=False)
-    studies = SubjectRelation('Study', cardinality='**')
+    study = SubjectRelation('Study', cardinality='1*')
     subjects = SubjectRelation('Subject', cardinality='**', inlined=False)
+    type = String(maxsize=64, required=True, vocabulary=[u'family', u'schedule'])
 
 
 class Investigator(EntityType):
@@ -118,8 +123,9 @@ class Protocol(EntityType):
     """ A protocol for a study or a measure """
     identifier = String(required=True, unique=True, indexed=True, maxsize=64)
     name = String(maxsize=256, required=True, unique=True)
-    studies = SubjectRelation('Study', cardinality='?*', inlined=False)
-    subjects = SubjectRelation('Subject', cardinality="**", inlined=False)
+    study = SubjectRelation('Study', cardinality='1*', inlined=False)
+    # subjects = SubjectRelation('Subject', cardinality="**", inlined=False)
+    assessments = SubjectRelation('Assessment', cardinality="*?", inlined=False)
 
 
 class Diagnostic(EntityType):
@@ -135,13 +141,16 @@ class Assessment(EntityType):
     """ Store information about a visit """
     age_of_subject = Int(indexed=True)
     timepoint = String(maxsize=64)
-    study = SubjectRelation('Study', cardinality='1*', inlined=True)
+    study = SubjectRelation('Study', cardinality='1*', inlined=False)
     center = SubjectRelation('Center', cardinality='1*', inlined=False)
     subject = SubjectRelation('Subject', cardinality='1*', inlined=False)
     scans = SubjectRelation('Scan', cardinality='*1', inlined=False)
     questionnaire_runs = SubjectRelation("QuestionnaireRun", cardinality="*1", inlined=False)
     genomic_measures = SubjectRelation("GenomicMeasure", cardinality="*1", inlined=False)
     processing_runs = SubjectRelation("ProcessingRun", cardinality="**", inlined=False)
+    protocol = SubjectRelation('Protocol', cardinality="?*", inlined=False)
+    # Add identifier to Assessment entity
+    identifier = String(maxsize=128, fulltextindexed=True, unique=True)
 
 
 class ProcessingRun(EntityType):
@@ -152,9 +161,14 @@ class ProcessingRun(EntityType):
     version = String(maxsize=64)
     parameters = String(maxsize=256)
     note = RichString(fulltextindexed=True)
-    results_files_sets = SubjectRelation('FileSet', cardinality='**', inlined=False)
+    results_filesets = SubjectRelation('FileSet', cardinality='**', inlined=False)
     config_file_sets = SubjectRelation('FileSet', cardinality='**', inlined=False)
     score_values = SubjectRelation("ScoreValue", cardinality="*?", inlined=False)
+    identifier = String(maxsize=128, fulltextindexed=True)
+    label = String(maxsize=64)
+    inputs = SubjectRelation(('GenomicMeasure', 'Scan'), cardinality='**')
+    study = SubjectRelation('Study', cardinality='1*', inlined=False)
+    subjects = SubjectRelation("Subject", cardinality="**", inlined=False)
 
 
 ###############################################################################
@@ -194,4 +208,10 @@ class ScoreValue(EntityType):
     text = String(maxsize=2048, fulltextindexed=True)
     value = Float(indexed=True)
     datetime = Date()
+    # scoregroups = SubjectRelation('ScoreGroup', cardinality='**')
+
+# class ScoreGroup(EntityType):
+#     """ A group of score values that should be considered together """
+#     identifier = String(required=True, unique=True, indexed=True, maxsize=64)
+#     scores = SubjectRelation('ScoreValue', cardinality='**')
 

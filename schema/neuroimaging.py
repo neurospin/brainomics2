@@ -37,19 +37,20 @@ from yams.buildobjs import (EntityType,
 ### IMAGE AND SCAN ############################################################
 
 
-SCAN_DATA = ('MRIData', 'DMRIData', 'FMRIData')
+SCAN_DATA = ('MRIData', 'DMRIData', 'FMRIData', 'EEGData', 'ETData')
 
 class Scan(EntityType):
     label = String(maxsize=256, required=True, indexed=True, fulltextindexed=True)
     identifier = String(maxsize=128)
     type = String(maxsize=256, required=True, indexed=True)
     format = String(maxsize=128, indexed=True)
-    has_data = SubjectRelation(SCAN_DATA, cardinality='?1', inlined=True)
-    study = SubjectRelation("Study", cardinality="1*", inlined=True)
+    has_data = SubjectRelation(SCAN_DATA, cardinality='?1', inlined=False)
+    study = SubjectRelation("Study", cardinality="1*", inlined=False)
     subject = SubjectRelation("Subject", cardinality="1*", inlined=False)
     score_values = SubjectRelation("ScoreValue", cardinality="*1", inlined=False)
     processing_runs = SubjectRelation("ProcessingRun", cardinality="**", inlined=False)
     description = RichString(fulltextindexed=True)
+    results_filesets = SubjectRelation('FileSet', cardinality='**', inlined=False)
 
 
 class MRIData(EntityType):
@@ -65,7 +66,8 @@ class MRIData(EntityType):
     # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
-    tr = Float(indexed=False)
+    # tr = Float(indexed=False)
+    tr = String(maxsize=64, required=True)
     te = Float(indexed=False)
     field = String(maxsize=10, indexed=False)
     affine = Bytes()
@@ -79,7 +81,8 @@ class DMRIData(EntityType):
     # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
-    tr = Float(required=True, indexed=False)
+    # tr = Float(required=True, indexed=False)
+    tr = String(maxsize=64, required=True)
     te = Float(required=True, indexed=False)
     shape_x = Int(indexed=False)
     shape_y = Int(indexed=False)
@@ -95,7 +98,19 @@ class FMRIData(EntityType):
     voxel_res_z = Float(required=True)
     fov_x = Float()
     fov_y = Float()
-    tr = Float()  # add required=True in next major revision
+    # tr = Float()  # add required=True in next major revision
+    tr = String(maxsize=64, required=True)
     te = Float()
     field = String(maxsize=10, indexed=True)
 
+# EEGData entity
+class EEGData(EntityType):
+    duration = String()
+    sampling_rate = String()
+    temperature = String()
+    number_of_channels = String(maxsize=8)
+
+# ETData entity
+class ETData(EntityType):
+    duration = String()
+    scene_description = String()

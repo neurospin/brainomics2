@@ -76,9 +76,10 @@ class GenomicMeasure(EntityType):
     valid = Boolean(indexed=True)
     platform = SubjectRelation('GenomicPlatform', cardinality='?*', inlined=False)
     subjects = SubjectRelation("Subject", cardinality="**", inlined=False)
-    study = SubjectRelation("Study", cardinality="1*", inlined=True)
+    study = SubjectRelation("Study", cardinality="1*", inlined=False)
     processing_runs = SubjectRelation("ProcessingRun", cardinality="**", inlined=False)
-
+    identifier = String(maxsize=128, fulltextindexed=True)
+    label = String(maxsize=64)
 
 class GenomicPlatform(EntityType):
     name = String(required=True, maxsize=64)

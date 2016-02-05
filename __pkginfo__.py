@@ -13,7 +13,8 @@ author_email = ''
 description = 'cubicweb business logic cube for schema definition'
 web = 'http://www.cubicweb.org/project/%s' % distname
 
-__depends__ =  {'cubicweb': '>= 3.19.0'}
+__depends__ =  {'cubicweb': '>= 3.19.0',
+                'cubicweb-container': '>= 2.4.0'}
 __recommends__ = {}
 
 classifiers = [

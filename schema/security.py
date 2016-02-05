@@ -41,9 +41,9 @@ from cubes.brainomics2.schema.neuroimaging import MRIData
 from cubes.brainomics2.schema.neuroimaging import FMRIData
 from cubes.brainomics2.schema.questionnaire import QuestionnaireRun
 from cubes.brainomics2.schema.questionnaire import Questionnaire
-from cubes.brainomics2.schema.questionnaire import OpenAnswer
 from cubes.brainomics2.schema.questionnaire import Question
 from cubes.brainomics2.schema.genomics import GenomicMeasure
+from cubes.brainomics2.config import ASSESSMENT_CONTAINER
 ###############################################################################
 # Set permissions
 ###############################################################################
@@ -80,7 +80,7 @@ class in_assessment(RelationDefinition):
 
 ENTITIES = [
     Scan, FMRIData, DMRIData, EEGData, ETData, MRIData, FileSet, ExternalFile,
-    ScoreValue, ProcessingRun, QuestionnaireRun, OpenAnswer, GenomicMeasure]
+    ScoreValue, ProcessingRun, QuestionnaireRun, GenomicMeasure]
 
 
 DEFAULT_PERMISSIONS = {
@@ -136,27 +136,30 @@ ENTITY_PERMISSIONS = {
 }
 
 
-# Set the assessment entity permissions
-Assessment.set_permissions(ASSESSMENT_PERMISSIONS)
+def post_build_callback(schema):
 
-# Set the subject/center/study/questionnaire/question entities permissions
-Subject.set_permissions(DEFAULT_PERMISSIONS)
-Center.set_permissions(DEFAULT_PERMISSIONS)
-Study.set_permissions(DEFAULT_PERMISSIONS)
-Questionnaire.set_permissions(DEFAULT_PERMISSIONS)
-Question.set_permissions(DEFAULT_PERMISSIONS)
+    ASSESSMENT_CONTAINER.define_container(schema)
 
-# Set the permissions on the used entities only
-for entity in ENTITIES:
-    entity.__permissions__ = ENTITY_PERMISSIONS
+    # Set the assessment entity permissions
+    Assessment.set_permissions(ASSESSMENT_PERMISSIONS)
 
-# Update the entities list to set relation permissions
-ENTITIES.extend([Assessment, Subject, Center, Study, Questionnaire, Question])
+    # Set the subject/center/study/questionnaire/question entities permissions
+    Subject.set_permissions(DEFAULT_PERMISSIONS)
+    Center.set_permissions(DEFAULT_PERMISSIONS)
+    Study.set_permissions(DEFAULT_PERMISSIONS)
+    Questionnaire.set_permissions(DEFAULT_PERMISSIONS)
+    Question.set_permissions(DEFAULT_PERMISSIONS)
 
-# Set the permissions on the ised entities relations only
-for entity in ENTITIES:
+    # Set the permissions on the used entities only
+    for entity in ENTITIES:
+        entity.__permissions__ = ENTITY_PERMISSIONS
 
-    # Get the subject relations
-    for relation in entity.__relations__:
-        if relation.__class__ is SubjectRelation:
-            relation.__permissions__ = RELATION_PERMISSIONS
+    # Update the entities list to set relation permissions
+    ENTITIES.extend([Assessment, Subject, Center, Study, Questionnaire, Question])
+
+    # Set the permissions on the ised entities relations only
+    for entity in ENTITIES:
+        # Get the subject relations
+        for relation in entity.__relations__:
+            if relation.__class__ is SubjectRelation:
+                relation.__permissions__ = RELATION_PERMISSIONS

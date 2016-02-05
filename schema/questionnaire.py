@@ -65,7 +65,6 @@ class Answer(EntityType):
     question = SubjectRelation('Question', cardinality='**', inlined=False)
     questionnaire_run = SubjectRelation('QuestionnaireRun', cardinality='1*', inlined=False)
 
-# XXX to remove
 class OpenAnswer(EntityType):
     value = String(required=True)
     identifier = String(maxsize=64, indexed=True, unique=True)

@@ -64,3 +64,8 @@ class Answer(EntityType):
     type = String(indexed=True)
     question = SubjectRelation('Question', cardinality='**', inlined=False)
     questionnaire_run = SubjectRelation('QuestionnaireRun', cardinality='1*', inlined=False)
+
+class OpenAnswer(EntityType):
+    value = String(required=True)
+    identifier = String(maxsize=64, indexed=True, unique=True)
+    questionnaire_run = SubjectRelation("QuestionnaireRun", cardinality="1*", inlined=False)

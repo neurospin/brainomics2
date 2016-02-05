@@ -40,6 +40,7 @@ from cubes.brainomics2.schema.neuroimaging import DMRIData, EEGData, ETData
 from cubes.brainomics2.schema.neuroimaging import MRIData
 from cubes.brainomics2.schema.neuroimaging import FMRIData
 from cubes.brainomics2.schema.questionnaire import QuestionnaireRun
+from cubes.brainomics2.schema.questionnaire import OpenAnswer
 from cubes.brainomics2.schema.questionnaire import Questionnaire
 from cubes.brainomics2.schema.questionnaire import Question
 from cubes.brainomics2.schema.genomics import GenomicMeasure
@@ -80,7 +81,7 @@ class in_assessment(RelationDefinition):
 
 ENTITIES = [
     Scan, FMRIData, DMRIData, EEGData, ETData, MRIData, FileSet, ExternalFile,
-    ScoreValue, ProcessingRun, QuestionnaireRun, GenomicMeasure]
+    ScoreValue, ProcessingRun, QuestionnaireRun, OpenAnswer, GenomicMeasure]
 
 
 DEFAULT_PERMISSIONS = {

@@ -37,7 +37,7 @@ class QuestionnaireRun(EntityType):
     iteration = Int(indexed=True)
     questionnaire = SubjectRelation('Questionnaire', cardinality='1*', inlined=False)
     subject = SubjectRelation('Subject', cardinality='1*', inlined=False)
-    result = SubjectRelation("File", cardinality="1?", inlined=False,
+    result = SubjectRelation("File", cardinality="1?", inlined=True,
                              composite="subject")
     study = SubjectRelation('Study', cardinality='1*', inlined=False)
 

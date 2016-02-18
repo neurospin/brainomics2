@@ -1,30 +1,19 @@
 ##########################################################################
+# NSAp - Copyright (C) CEA, 2016
 # Distributed under the terms of the CeCILL-B license, as published by
 # the CEA-CNRS-INRIA. Refer to the LICENSE file or to
 # http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
 # for details.
 ##########################################################################
-# copyright 2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
-# copyright 2013 CEA (Saclay, FRANCE), all rights reserved.
-# contact http://www.logilab.fr -- mailto:contact@logilab.fr
-#
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation, either version 2.1 of the License, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from yams.buildobjs import SubjectRelation, RelationDefinition
-from cubicweb.schema import ERQLExpression, RRQLExpression
-
+# CubicWeb import
+from yams.buildobjs import SubjectRelation
+from yams.buildobjs import RelationDefinition
+from cubicweb.schema import ERQLExpression
+from cubicweb.schema import RRQLExpression
+from yams.buildobjs import RelationDefinition
+from yams.buildobjs import RelationType
 
 # Cubes import
 from cubes.brainomics2.schema.medicalexp import Assessment
@@ -36,7 +25,10 @@ from cubes.brainomics2.schema.medicalexp import ProcessingRun
 from cubes.brainomics2.schema.medicalexp import Center
 from cubes.brainomics2.schema.medicalexp import Study
 from cubes.brainomics2.schema.neuroimaging import Scan
-from cubes.brainomics2.schema.neuroimaging import DMRIData, EEGData, ETData
+from cubes.brainomics2.schema.neuroimaging import DMRIData
+from cubes.brainomics2.schema.neuroimaging import EEGData
+from cubes.brainomics2.schema.neuroimaging import ETData
+from cubes.brainomics2.schema.neuroimaging import PETData
 from cubes.brainomics2.schema.neuroimaging import MRIData
 from cubes.brainomics2.schema.neuroimaging import FMRIData
 from cubes.brainomics2.schema.questionnaire import QuestionnaireRun
@@ -45,13 +37,14 @@ from cubes.brainomics2.schema.questionnaire import Questionnaire
 from cubes.brainomics2.schema.questionnaire import Question
 from cubes.brainomics2.schema.genomics import GenomicMeasure
 from cubes.brainomics2.config import ASSESSMENT_CONTAINER
+from cubes.brainomics2.schema.card import Card
+
+
 ###############################################################################
-# Set permissions
+# Define permission relations
 ###############################################################################
 
 # CWGROUP
-
-
 class can_read(RelationDefinition):
     subject = "CWGroup"
     object = "Assessment"
@@ -63,34 +56,28 @@ class can_update(RelationDefinition):
     object = "Assessment"
     cardinality = "*?"
 
-# RIGHTS
-
-
-class in_assessment(RelationDefinition):
-    subject = ("ProcessingRun", "ExternalFile", "Scan", "FileSet", "FMRIData", 
-               "DMRIData", "EEGData", "ETData", "MRIData", "ScoreValue", 
-               "QuestionnaireRun")
-    object = "Assessment"
-    cardinality = "1*"
-    inlined = True
-
 
 ###############################################################################
 # Set permissions
 ###############################################################################
 
-ENTITIES = [
-    Scan, FMRIData, DMRIData, EEGData, ETData, MRIData, FileSet, ExternalFile,
-    ScoreValue, ProcessingRun, QuestionnaireRun, OpenAnswer, GenomicMeasure]
+RESTRICTED_ENTITIES = [
+    Scan, FMRIData, DMRIData, PETData, MRIData, EEGData, ETData, FileSet,
+    ExternalFile, ScoreValue, ProcessingRun, QuestionnaireRun, OpenAnswer,
+    GenomicMeasure]
+
+PUBLIC_ENTITIES = [
+    Subject, Center, Study, Questionnaire, Question, Card]
+
+ENTITIES = RESTRICTED_ENTITIES + PUBLIC_ENTITIES + [Assessment]
 
 
-DEFAULT_PERMISSIONS = {
+PUBLIC_PERMISSIONS = {
     "read": ("managers", "users", "guests"),
     "add": ("managers",),
     "update": ("managers",),
     "delete": ("managers",),
 }
-
 
 ASSESSMENT_PERMISSIONS = {
     "read": (
@@ -107,7 +94,6 @@ ASSESSMENT_PERMISSIONS = {
         ERQLExpression("U in_group G, G can_update X")),
 }
 
-
 RELATION_PERMISSIONS = {
     "read": (
         "managers",
@@ -120,8 +106,7 @@ RELATION_PERMISSIONS = {
         RRQLExpression("S in_assessment A, U in_group G, G can_update A"))
 }
 
-
-ENTITY_PERMISSIONS = {
+RESTRICTED_PERMISSIONS = {
     "read": (
         "managers",
         ERQLExpression("X in_assessment A, U in_group G, G can_read A")),
@@ -136,31 +121,54 @@ ENTITY_PERMISSIONS = {
         ERQLExpression("X in_assessment A, U in_group G, G can_update A")),
 }
 
+MANAGER_PERMISSIONS = {
+    "read": ("managers",),
+    "add": ("managers",),
+    "update": ("managers",),
+    "delete": ("managers",),
+}
+
+UNTRACK_ENTITIES = ["CWUser", "CWGroup", "CWSource", "Study", "Center",
+                    "Device", "Question", "Questionnaire", "Subject",
+                    "GenomicPlatform", "Snp"]
+UNTRACK_ENTITIES += ["Assessment"]
+
 
 def post_build_callback(schema):
 
+    # Get the schema
+    entities = schema.entities()
+    names = [entity.type for entity in entities]
+
+    # Link each entity to an assessment through an 'in_assessment' relation
+    schema.add_relation_type(RelationType("in_assessment", inlined=False))
+    for entity in entities:
+        if entity.type not in UNTRACK_ENTITIES and not entity.final:
+            schema.add_relation_def(
+                RelationDefinition(subject=entity.type,
+                                   name="in_assessment",
+                                   object="Assessment",
+                                   cardinality='1*'))
+
+    # Add a container to the assessment entity
     ASSESSMENT_CONTAINER.define_container(schema)
 
-    # Set the assessment entity permissions
-    Assessment.set_permissions(ASSESSMENT_PERMISSIONS)
+    # Set strict default permissions
+    entity_names = [e.__name__ for e in ENTITIES]
+    for entity in entities:
+        if entity.type not in entity_names:
+            entity.permissions = MANAGER_PERMISSIONS
 
-    # Set the subject/center/study/questionnaire/question entities permissions
-    Subject.set_permissions(DEFAULT_PERMISSIONS)
-    Center.set_permissions(DEFAULT_PERMISSIONS)
-    Study.set_permissions(DEFAULT_PERMISSIONS)
-    Questionnaire.set_permissions(DEFAULT_PERMISSIONS)
-    Question.set_permissions(DEFAULT_PERMISSIONS)
-
-    # Set the permissions on the used entities only
+    # Set the relation permissions
     for entity in ENTITIES:
-        entity.__permissions__ = ENTITY_PERMISSIONS
-
-    # Update the entities list to set relation permissions
-    ENTITIES.extend([Assessment, Subject, Center, Study, Questionnaire, Question])
-
-    # Set the permissions on the ised entities relations only
-    for entity in ENTITIES:
-        # Get the subject relations
         for relation in entity.__relations__:
             if relation.__class__ is SubjectRelation:
                 relation.__permissions__ = RELATION_PERMISSIONS
+
+    # Set the specific entity permissions
+    entities[names.index("Assessment")].permissions = ASSESSMENT_PERMISSIONS
+    for entity in PUBLIC_ENTITIES:
+        entities[names.index(entity.__name__)].permissions = PUBLIC_PERMISSIONS
+    for entity in RESTRICTED_ENTITIES:
+        entities[names.index(entity.__name__)].permissions = RESTRICTED_PERMISSIONS
+

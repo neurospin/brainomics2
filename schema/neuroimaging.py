@@ -1,26 +1,10 @@
-# -*- coding: utf-8 -*-
 ##########################################################################
+# NSAp - Copyright (C) CEA, 2016
 # Distributed under the terms of the CeCILL-B license, as published by
 # the CEA-CNRS-INRIA. Refer to the LICENSE file or to
 # http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
 # for details.
 ##########################################################################
-# copyright 2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
-# copyright 2013 CEA (Saclay, FRANCE), all rights reserved.
-# contact http://www.logilab.fr -- mailto:contact@logilab.fr
-#
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation, either version 2.1 of the License, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """cubicweb-neuroimage schema"""
 
@@ -36,20 +20,20 @@ from yams.buildobjs import (EntityType,
 ### IMAGE AND SCAN ############################################################
 
 
-SCAN_DATA = ('MRIData', 'DMRIData', 'FMRIData', 'EEGData', 'ETData')
+SCAN_DATA = ('MRIData', 'DMRIData', 'FMRIData', 'EEGData', 'ETData', 'PETData')
 
 class Scan(EntityType):
     label = String(maxsize=256, required=True, indexed=True, fulltextindexed=True)
-    identifier = String(maxsize=128)
+    identifier = String(required=True, maxsize=128, unique=True)
     type = String(maxsize=256, required=True, indexed=True)
     format = String(maxsize=128, indexed=True)
+
     has_data = SubjectRelation(SCAN_DATA, cardinality='?1', inlined=False)
-    study = SubjectRelation("Study", cardinality="1*", inlined=False)
     subject = SubjectRelation("Subject", cardinality="1*", inlined=False)
     score_values = SubjectRelation("ScoreValue", cardinality="*1", inlined=False)
     processing_runs = SubjectRelation("ProcessingRun", cardinality="**", inlined=False)
     description = RichString(fulltextindexed=True)
-    results_filesets = SubjectRelation('FileSet', cardinality='**', inlined=False)
+    results_filesets = SubjectRelation('FileSet', cardinality='*1', inlined=False)
 
 
 class MRIData(EntityType):
@@ -65,7 +49,7 @@ class MRIData(EntityType):
     # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
-    tr = String(maxsize=64, required=True)
+    tr = Float()
     te = Float(indexed=False)
     field = String(maxsize=10, indexed=False)
     affine = Bytes()
@@ -79,7 +63,7 @@ class DMRIData(EntityType):
     # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
-    tr = String(maxsize=64, required=True)
+    tr = Float()
     te = Float(required=True, indexed=False)
     shape_x = Int(indexed=False)
     shape_y = Int(indexed=False)
@@ -96,12 +80,11 @@ class FMRIData(EntityType):
     voxel_res_z = Float(required=True)
     fov_x = Float()
     fov_y = Float()
-    tr = String(maxsize=64, required=True)
+    tr = Float()
     te = Float()
     field = String(maxsize=10, indexed=True)
 
 
-# EEGData entity
 class EEGData(EntityType):
     duration = String()
     sampling_rate = String()
@@ -109,7 +92,14 @@ class EEGData(EntityType):
     number_of_channels = String(maxsize=8)
 
 
-# ETData entity
 class ETData(EntityType):
     duration = String()
+
+
+class PETData(EntityType):
+    voxel_res_x = Float(required=True, indexed=True)
+    voxel_res_y = Float(required=True, indexed=True)
+    voxel_res_z = Float(required=True, indexed=True)
+    tr = Float()
+    te = Float(required=True, indexed=True)
     scene_description = String()

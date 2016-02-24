@@ -24,6 +24,7 @@ class Scan(EntityType):
     label = String(maxsize=256, required=True, indexed=True, fulltextindexed=True)
     identifier = String(required=True, maxsize=128, unique=True)
     type = String(maxsize=256, required=True, indexed=True)
+    number = Int(indexed=False)
     format = String(maxsize=128, indexed=True)
 
 

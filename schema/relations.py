@@ -39,7 +39,7 @@ class subjects(RelationDefinition):
         'add':    ('managers',),
         'delete': ('managers',)}
     inlined = False
-    subject = ("GenomicMeasure", "Study",
+    subject = ("GenomicMeasure", "Study", "ProcessingRun",
                "SubjectGroup", "Center", "Assessment")
     object = "Subject"
     cardinality = "**"
@@ -203,7 +203,7 @@ class processing_runs(RelationDefinition):
         'add':    ('managers',),
         'delete': ('managers',)}
     inlined = False
-    subject = ("Assessment", "GenomicMeasure", "Scan", "Study")
+    subject = ("Assessment", "GenomicMeasure", "Scan", "Study", "Subject")
     object = "ProcessingRun"
     cardinality = "**"
 

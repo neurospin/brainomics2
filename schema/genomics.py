@@ -7,27 +7,21 @@
 ##########################################################################
 
 
-"""cubicweb-genomics schema"""
+from yams.buildobjs import EntityType
+from yams.buildobjs import String
+from yams.buildobjs import RichString
+from yams.buildobjs import Int
+from yams.buildobjs import Float
+from yams.buildobjs import Date
+from yams.buildobjs import Boolean
+from yams.buildobjs import BigInt
+from yams.buildobjs import Bytes
 
-
-from yams.buildobjs import (EntityType,
-                            RelationDefinition,
-                            SubjectRelation,
-                            String,
-                            RichString,
-                            BigInt,
-                            Int,
-                            Float,
-                            Boolean)
-
-
-### GENETICS ENTITIES #########################################################
 
 class Chromosome(EntityType):
     """ Chromosome definition """
     name = String(required=True, unique=True, maxsize=16)
     identifier = String(required=True, indexed=True, maxsize=64)
-    genes = SubjectRelation('Gene', cardinality='*+', inlined=False)
 
 
 class Gene(EntityType):
@@ -37,17 +31,12 @@ class Gene(EntityType):
     uri = String(maxsize=256, indexed=True)
     start_position = Int(indexed=True)
     stop_position = Int(indexed=True)
-    # Allow for translocated genes
-    chromosomes = SubjectRelation('Chromosome', cardinality='+*', inlined=False)
 
 
 class Snp(EntityType):
     """ SNP definition """
     rs_id = String(required=True, unique=True, maxsize=16)
     position = BigInt(required=True, indexed=True)
-    chromosome = SubjectRelation('Chromosome', cardinality='?*', inlined=False)
-    gene = SubjectRelation('Gene', cardinality='**', inlined=False)
-    genomis_platforms = SubjectRelation("GenomicPlatform", cardinality="**", inlined=False)
 
 
 class GenomicMeasure(EntityType):
@@ -61,14 +50,7 @@ class GenomicMeasure(EntityType):
     identifier = String(maxsize=128, fulltextindexed=True)
     label = String(maxsize=64)
 
-    platform = SubjectRelation('GenomicPlatform', cardinality='?*', inlined=False)
-    subjects = SubjectRelation("Subject", cardinality="**", inlined=False)
-    processing_runs = SubjectRelation("ProcessingRun", cardinality="**", inlined=False)
-    results_filesets = SubjectRelation('FileSet', cardinality='*1', inlined=False)
-
 
 class GenomicPlatform(EntityType):
     name = String(required=True, maxsize=64)
-    snps = SubjectRelation("Snp", cardinality="**", inlined=False)
-    genomic_measures =  SubjectRelation("GenomicMeasure", cardinality="*1", inlined=False)
 

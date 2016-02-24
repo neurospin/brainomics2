@@ -7,23 +7,15 @@
 ##########################################################################
 
 from yams.buildobjs import EntityType
-from yams.buildobjs import RelationType
-from yams.buildobjs import RelationDefinition
 from yams.buildobjs import String
 from yams.buildobjs import RichString
 from yams.buildobjs import Int
 from yams.buildobjs import Float
 from yams.buildobjs import Date
 from yams.buildobjs import Boolean
+from yams.buildobjs import BigInt
+from yams.buildobjs import Bytes
 
-from yams.buildobjs import SubjectRelation
-
-_ = unicode
-
-
-###############################################################################
-# Shared entities
-###############################################################################
 
 class Subject(EntityType):
     """ The subject """
@@ -39,30 +31,17 @@ class Subject(EntityType):
         vocabulary=('right', 'left', 'ambidextrous', 'mixed', 'unknown'))
     position_in_family = String(maxsize=64)
 
-    subject_groups = SubjectRelation('SubjectGroup', cardinality='**')
-    diagnostics = SubjectRelation('Diagnostic', cardinality='**', composite='subject')
-    genomic_measures = SubjectRelation("GenomicMeasure", cardinality="**", inlined=False)
-    scans = SubjectRelation("Scan", cardinality="*1", inlined=False)
-    center = SubjectRelation("Center", cardinality="?*", inlined=False)
-    subjectgroups = SubjectRelation('SubjectGroup', cardinality='**')
-
 
 class Study(EntityType):
     """ The project """
     name = String(required=True, indexed=True, maxsize=256)
     description = RichString(fulltextindexed=True)
 
-    genomic_measures = SubjectRelation("GenomicMeasure", cardinality="*1", inlined=False)
-    scans = SubjectRelation("Scan", cardinality="*1", inlined=False)
-    subjectgroups = SubjectRelation('SubjectGroup', cardinality='*1')
-    protocols = SubjectRelation('Protocol', cardinality='*1')
-
 
 class SubjectGroup(EntityType):
     """ Group of subject """
     identifier = String(required=True, unique=True, maxsize=64)
     name = String(maxsize=64, required=True, indexed=False)
-
     type = String(maxsize=64, required=True, vocabulary=[u'family', u'schedule'])
 
 
@@ -94,7 +73,6 @@ class Device(EntityType):
     serialnum = String(maxsize=256)
     software_version = String(maxsize=128)
     configurations = RichString(fulltextindexed=True)
-    center = SubjectRelation('Center', cardinality='1*', inlined=False)
 
 
 class Protocol(EntityType):
@@ -109,21 +87,12 @@ class Diagnostic(EntityType):
     on BodyLocation/Disease """
     age_at_diagnosis = Int()
 
-    conclusion = String(maxsize=256, fulltextindexed=True)
-    subject = SubjectRelation('Subject', cardinality="?*", inlined=False)
-
 
 class Assessment(EntityType):
     """ Store information about a visit """
     identifier = String(required=True, maxsize=128, unique=True)
-    age_of_subject = Int(indexed=True)
+    age_of_subject = Float(indexed=True)
     timepoint = String(maxsize=64, indexed=True)
-
-    center = SubjectRelation('Center', cardinality='1*', inlined=False)
-    scans = SubjectRelation('Scan', cardinality='*1', inlined=False)
-    genomic_measures = SubjectRelation("GenomicMeasure", cardinality="*1", inlined=False)
-    processing_runs = SubjectRelation("ProcessingRun", cardinality="**", inlined=False)
-    protocol = SubjectRelation('Protocol', cardinality="?*", inlined=False)
 
 
 class ProcessingRun(EntityType):
@@ -135,12 +104,6 @@ class ProcessingRun(EntityType):
     version = String(maxsize=64)
     parameters = String(maxsize=256)
     note = RichString(fulltextindexed=True)
-
-    results_filesets = SubjectRelation('FileSet', cardinality='**', inlined=False)
-    config_file_sets = SubjectRelation('FileSet', cardinality='**', inlined=False)
-    score_values = SubjectRelation("ScoreValue", cardinality="*?", inlined=False)
-    label = String(maxsize=64)
-    inputs = SubjectRelation(('GenomicMeasure', 'Scan'), cardinality='**')
 
 
 class FileSet(EntityType):
@@ -172,110 +135,3 @@ class ScoreValue(EntityType):
     text = String(maxsize=2048, fulltextindexed=True)
     value = Float(indexed=True)
     datetime = Date()
-
-
-
-###############################################################################
-# Shared relations
-###############################################################################
-
-class questionnaire_runs(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = ("Assessment", "Study", "Subject")
-    object = "QuestionnaireRun"
-    cardinality = "*1"
-    composite = "subject"
-    inlined=False
-
-
-class external_files(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = "FileSet"
-    object = "ExternalFile"
-    cardinality = "**"
-    composite = "subject"
-    inlined=False
-
-
-class subjects(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = ("Study", "SubjectGroup", "Center", "Assessment")
-    object = "Subject"
-    cardinality = "**"
-    composite = "subject"
-    inlined=False
-
-
-class study(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = ("Subject", "SubjectGroup", "Protocol", "Assessment",
-               "ProcessingRun", "Scan", "QuestionnaireRun", "GenomicMeasure")
-    object = "Study"
-    cardinality = "1*"
-    composite = "subject"
-    inlined=False
-
-
-class score_definition(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = "ScoreValue"
-    object = "ScoreDefinition"
-    cardinality = "1*"
-    composite = "object"
-    inlined=False
-
-
-class score_values(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = "ScoreDefinition"
-    object = "ScoreValue"
-    cardinality = "*1"
-    composite = "subject"
-    inlined=False
-
-
-class fileset(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = "ExternalFile"
-    object = "FileSet"
-    cardinality = "++"
-    composite = "object"
-    inlined=False
-
-
-class assessments(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    subject = ("Subject", "Study", "Center", "Protocol")
-    object = "Assessment"
-    cardinality = "**"
-    composite = "subject"
-    inlined=False
-
-
-
-
-

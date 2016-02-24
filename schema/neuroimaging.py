@@ -6,21 +6,19 @@
 # for details.
 ##########################################################################
 
-"""cubicweb-neuroimage schema"""
-
-
-from yams.buildobjs import (EntityType,
-                            SubjectRelation,
-                            String,
-                            RichString,
-                            Int,
-                            Float,
-                            Bytes)
-
-### IMAGE AND SCAN ############################################################
+from yams.buildobjs import EntityType
+from yams.buildobjs import String
+from yams.buildobjs import RichString
+from yams.buildobjs import Int
+from yams.buildobjs import Float
+from yams.buildobjs import Date
+from yams.buildobjs import Boolean
+from yams.buildobjs import BigInt
+from yams.buildobjs import Bytes
 
 
 SCAN_DATA = ('MRIData', 'DMRIData', 'FMRIData', 'EEGData', 'ETData', 'PETData')
+
 
 class Scan(EntityType):
     label = String(maxsize=256, required=True, indexed=True, fulltextindexed=True)
@@ -28,17 +26,9 @@ class Scan(EntityType):
     type = String(maxsize=256, required=True, indexed=True)
     format = String(maxsize=128, indexed=True)
 
-    has_data = SubjectRelation(SCAN_DATA, cardinality='?1', inlined=False)
-    subject = SubjectRelation("Subject", cardinality="1*", inlined=False)
-    score_values = SubjectRelation("ScoreValue", cardinality="*1", inlined=False)
-    processing_runs = SubjectRelation("ProcessingRun", cardinality="**", inlined=False)
-    description = RichString(fulltextindexed=True)
-    results_filesets = SubjectRelation('FileSet', cardinality='*1', inlined=False)
-
 
 class MRIData(EntityType):
     sequence = String(maxsize=128, indexed=True)
-    # Image technical information
     shape_x = Int(indexed=False)
     shape_y = Int(indexed=False)
     shape_z = Int(indexed=False)
@@ -46,7 +36,6 @@ class MRIData(EntityType):
     voxel_res_x = Float(indexed=False)
     voxel_res_y = Float(indexed=False)
     voxel_res_z = Float(indexed=False)
-    # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
     tr = Float()
@@ -56,11 +45,9 @@ class MRIData(EntityType):
 
 
 class DMRIData(EntityType):
-    # Image technical information
     voxel_res_x = Float(required=True, indexed=False)
     voxel_res_y = Float(required=True, indexed=False)
     voxel_res_z = Float(required=True, indexed=False)
-    # MRI specific. Should be put elsewhere ?
     fov_x = Float(indexed=False)
     fov_y = Float(indexed=False)
     tr = Float()

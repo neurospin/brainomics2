@@ -11,9 +11,10 @@
 from yams.buildobjs import SubjectRelation
 from yams.buildobjs import RelationDefinition
 from cubicweb.schema import ERQLExpression
-from cubicweb.schema import RRQLExpression
 from yams.buildobjs import RelationDefinition
 from yams.buildobjs import RelationType
+from cubicweb.entities.authobjs import CWUser
+from cubicweb.entities.authobjs import CWGroup
 
 # Cubes import
 from cubes.brainomics2.schema.medicalexp import Assessment
@@ -36,7 +37,7 @@ from cubes.brainomics2.schema.questionnaire import OpenAnswer
 from cubes.brainomics2.schema.questionnaire import Questionnaire
 from cubes.brainomics2.schema.questionnaire import Question
 from cubes.brainomics2.schema.genomics import GenomicMeasure
-from cubes.brainomics2.config import ASSESSMENT_CONTAINER
+from cubes.brainomics2.schema.file import File
 from cubes.brainomics2.schema.card import Card
 
 
@@ -46,15 +47,24 @@ from cubes.brainomics2.schema.card import Card
 
 # CWGROUP
 class can_read(RelationDefinition):
+    inlined = False
     subject = "CWGroup"
     object = "Assessment"
-    cardinality = "*?"
+    cardinality = "*+"
 
 
 class can_update(RelationDefinition):
+    inlined = False
     subject = "CWGroup"
     object = "Assessment"
-    cardinality = "*?"
+    cardinality = "**"
+
+
+class in_assessment(RelationType):
+    inlined = False
+    cardinality = "1*"
+    subject = "*"
+    object = "Assessment"
 
 
 ###############################################################################
@@ -64,16 +74,16 @@ class can_update(RelationDefinition):
 RESTRICTED_ENTITIES = [
     Scan, FMRIData, DMRIData, PETData, MRIData, EEGData, ETData, FileSet,
     ExternalFile, ScoreValue, ProcessingRun, QuestionnaireRun, OpenAnswer,
-    GenomicMeasure]
+    GenomicMeasure, File]
 
 PUBLIC_ENTITIES = [
-    Subject, Center, Study, Questionnaire, Question, Card]
+    Subject, Center, Study, Questionnaire, Question, Card, CWUser, CWGroup]
 
 ENTITIES = RESTRICTED_ENTITIES + PUBLIC_ENTITIES + [Assessment]
 
 
 PUBLIC_PERMISSIONS = {
-    "read": ("managers", "users", "guests"),
+    "read": ("managers", "users"),
     "add": ("managers",),
     "update": ("managers",),
     "delete": ("managers",),
@@ -92,18 +102,6 @@ ASSESSMENT_PERMISSIONS = {
     "delete": (
         "managers",
         ERQLExpression("U in_group G, G can_update X")),
-}
-
-RELATION_PERMISSIONS = {
-    "read": (
-        "managers",
-        "users"),
-    "add": (
-        "managers",
-        RRQLExpression("S in_assessment A, U in_group G, G can_update A")),
-    "delete": (
-        "managers",
-        RRQLExpression("S in_assessment A, U in_group G, G can_update A"))
 }
 
 RESTRICTED_PERMISSIONS = {
@@ -130,45 +128,35 @@ MANAGER_PERMISSIONS = {
 
 UNTRACK_ENTITIES = ["CWUser", "CWGroup", "CWSource", "Study", "Center",
                     "Device", "Question", "Questionnaire", "Subject",
-                    "GenomicPlatform", "Snp"]
+                    "GenomicPlatform", "Snp", "CWDataImport", "CWProperty",
+                    "Workflow", "State", "BaseTransition", "Transition",
+                    "Card"]
 UNTRACK_ENTITIES += ["Assessment"]
+
+
+# Set known entities permissions
+for entity in PUBLIC_ENTITIES:
+    entity.__permissions__ = PUBLIC_PERMISSIONS
+for entity in RESTRICTED_ENTITIES:
+    entity.__permissions__ = RESTRICTED_PERMISSIONS
+
+# Set Assessment permissions
+Assessment.__permissions__ = ASSESSMENT_PERMISSIONS
 
 
 def post_build_callback(schema):
 
     # Get the schema
     entities = schema.entities()
-    names = [entity.type for entity in entities]
 
-    # Link each entity to an assessment through an 'in_assessment' relation
-    schema.add_relation_type(RelationType("in_assessment", inlined=False))
+    # Remove 'in_asessment' to untrack entities
     for entity in entities:
-        if entity.type not in UNTRACK_ENTITIES and not entity.final:
-            schema.add_relation_def(
-                RelationDefinition(subject=entity.type,
-                                   name="in_assessment",
-                                   object="Assessment",
-                                   cardinality='1*'))
+        if entity.type in UNTRACK_ENTITIES or entity.final:
+            schema.del_relation_def(entity.type, "in_assessment", "Assessment")
 
-    # Add a container to the assessment entity
-    ASSESSMENT_CONTAINER.define_container(schema)
-
-    # Set strict default permissions
+    # Set strict default permissions for unknown entities
     entity_names = [e.__name__ for e in ENTITIES]
     for entity in entities:
         if entity.type not in entity_names:
             entity.permissions = MANAGER_PERMISSIONS
-
-    # Set the relation permissions
-    for entity in ENTITIES:
-        for relation in entity.__relations__:
-            if relation.__class__ is SubjectRelation:
-                relation.__permissions__ = RELATION_PERMISSIONS
-
-    # Set the specific entity permissions
-    entities[names.index("Assessment")].permissions = ASSESSMENT_PERMISSIONS
-    for entity in PUBLIC_ENTITIES:
-        entities[names.index(entity.__name__)].permissions = PUBLIC_PERMISSIONS
-    for entity in RESTRICTED_ENTITIES:
-        entities[names.index(entity.__name__)].permissions = RESTRICTED_PERMISSIONS
 

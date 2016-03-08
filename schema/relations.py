@@ -6,38 +6,71 @@
 # for details.
 ##########################################################################
 
+"""
+Do not deal with composition relation properties since the generated databases
+are not expected to be dynamics.
+"""
+
+# Cubicweb import
 from yams.buildobjs import RelationDefinition
+from cubicweb.schema import RRQLExpression
+
+
+RELATION_PERMISSIONS = {
+    "read": (
+        "managers",
+        "users"),
+    "add": (
+        "managers",
+        RRQLExpression("S in_assessment A, U in_group G, G can_update A")),
+    "delete": (
+        "managers",
+        RRQLExpression("S in_assessment A, U in_group G, G can_update A"))
+}
 
 
 class questionnaire_runs(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Questionnaire", "Assessment", "Study", "Subject")
+    subject = "Assessment"
     object = "QuestionnaireRun"
     cardinality = "*1"
-    composite = "subject"
+
+
+class questionnaire_questionnaire_runs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Questionnaire"
+    object = "QuestionnaireRun"
+    cardinality = "*1"
+
+
+class study_questionnaire_runs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Study"
+    object = "QuestionnaireRun"
+    cardinality = "*1"
+
+
+class subject_questionnaire_runs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Subject"
+    object = "QuestionnaireRun"
+    cardinality = "*1"
 
 
 class external_files(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "FileSet"
     object = "ExternalFile"
     cardinality = "*1"
-    composite = "subject"
 
 
 class subjects(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("GenomicMeasure", "Study", "ProcessingRun",
                "SubjectGroup", "Center", "Assessment")
@@ -46,10 +79,7 @@ class subjects(RelationDefinition):
 
 
 class subject(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("QuestionnaireRun", "Diagnostic", "Scan")
     object = "Subject"
@@ -57,140 +87,152 @@ class subject(RelationDefinition):
 
 
 class study(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("Subject", "SubjectGroup", "Protocol", "Assessment",
                "ProcessingRun", "Scan", "QuestionnaireRun", "GenomicMeasure")
     object = "Study"
     cardinality = "1*"
-    composite = "object"
 
 
 class score_definition(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "ScoreValue"
     object = "ScoreDefinition"
-    cardinality = "1*"
-    composite = "object"
+    cardinality = "?*"
 
 
 class score_values(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Scan", "ProcessingRun", "ScoreDefinition")
+    subject = ("Scan", "ProcessingRun", "GenomicMeasure")
     object = "ScoreValue"
     cardinality = "*1"
-    composite = "subject"
+
+
+class scoredefinition_score_values(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "ScoreDefinition"
+    object = "ScoreValue"
+    cardinality = "*?"
 
 
 class fileset(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("File", "ExternalFile")
     object = "FileSet"
     cardinality = "**"
-    composite = "object"
 
 
 class assessments(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("Subject", "Study", "Center", "Protocol")
     object = "Assessment"
     cardinality = "**"
-    composite = "subject"
 
 
 class subjectgroups(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Subject", "Study")
+    subject = "Subject"
+    object = "SubjectGroup"
+    cardinality = "*+"
+
+
+class study_subjectgroups(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Study"
     object = "SubjectGroup"
     cardinality = "*+"
 
 
 class diagnostic(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Subject"
     object = "Diagnostic"
-    cardinality = "?+"
+    cardinality = "*+"
 
 
 class scans(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Subject", "Study", "Assessment")
+    subject = "Assessment"
     object = "Scan"
     cardinality = "*1"
-    composite = "subject"
+
+
+class subject_scans(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Subject"
+    object = "Scan"
+    cardinality = "*1"
+
+
+class study_scans(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Study"
+    object = "Scan"
+    cardinality = "*1"
 
 
 class center(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("Assessment", "Subject", "Device")
     object = "Center"
     cardinality = "**"
-    composite = "object"
 
 
 class genomic_measures(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Assessment", "Subject", "Study", "GenomicPlatform")
+    subject = "Assessment"
+    object = "GenomicMeasure"
+    cardinality = "*1"
+
+
+class genomic_platform_genomic_measures(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "GenomicPlatform"
+    object = "GenomicMeasure"
+    cardinality = "*1"
+
+
+class subject_genomic_measures(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Subject"
+    object = "GenomicMeasure"
+    cardinality = "*+"
+
+
+class study_genomic_measures(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Study"
     object = "GenomicMeasure"
     cardinality = "*+"
 
 
 class protocols(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Study"
     object = "Protocol"
     cardinality = "*1"
-    composite = "subject"
 
 
 class protocol(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Assessment"
     object = "Protocol"
@@ -198,88 +240,79 @@ class protocol(RelationDefinition):
 
 
 class processing_runs(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Assessment", "GenomicMeasure", "Scan", "Study", "Subject")
+    subject = ("Assessment", "GenomicMeasure", "Scan")
     object = "ProcessingRun"
     cardinality = "**"
 
 
-class results_filesets(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+class study_processing_runs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Study"
+    object = "ProcessingRun"
+    cardinality = "*1"
+
+
+class subject_processing_runs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Subject"
+    object = "ProcessingRun"
+    cardinality = "**"
+
+
+class filesets(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("ProcessingRun", "GenomicMeasure", "Scan")
     object = "FileSet"
-    cardinality = "**"
-
-
-class config_filesets(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    inlined = False
-    subject = "ProcessingRun"
-    object = "FileSet"
-    cardinality = "**"
+    cardinality = "*+"
 
 
 class inputs(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "ProcessingRun"
-    object = ("GenomicMeasure", "Scan")
+    object = ("GenomicMeasure", "Scan", "ProcessingRun", "QuestionnaireRun")
     cardinality = "**"
 
 
 class genes(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Chromosome"
     object = "Gene"
-    cardinality = "*+"
+    cardinality = "++"
 
 
 class chromosomes(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Gene"
     object = "Chromosome"
-    cardinality = "+*"
+    cardinality = "++"
 
 
 class chromosome(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Snp"
     object = "Chromosome"
-    cardinality = "?*"
-    composite = "object"
+    cardinality = "++"
+
+
+class snps(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "GenomicPlatform"
+    object = "Snp"
+    cardinality = "*+"
 
 
 class genomic_platforms(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Snp"
     object = "GenomicPlatform"
@@ -287,119 +320,73 @@ class genomic_platforms(RelationDefinition):
 
 
 class genomic_platform(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "GenomicMeasure"
     object = "GenomicPlatform"
     cardinality = "?*"
-    composite = "object"
-
-
-class snps(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    inlined = False
-    subject = "GenomicPlatform"
-    object = "Snp"
-    cardinality = "**"
 
 
 class has_data(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Scan"
-    object = ('MRIData', 'DMRIData',
-              'FMRIData', 'EEGData', 'ETData', 'PETData')
+    object = ("MRIData", "DMRIData", "FMRIData", "EEGData", "ETData",
+              "PETData")
     cardinality = "?1"
-    composite = "subject"
-
-
-class result(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    inlined = True
-    subject = "QuestionnaireRun"
-    object = "File"
-    cardinality = "??"
-    composite = "subject"
 
 
 class open_answers(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Question", "QuestionnaireRun")
+    subject = "QuestionnaireRun"
     object = "OpenAnswer"
     cardinality = "*1"
-    composite = "subject"
+
+
+class question_open_answers(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Question"
+    object = "OpenAnswer"
+    cardinality = "*1"
 
 
 class questions(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Questionnaire"
     object = "Question"
     cardinality = "+1"
-    composite = "subject"
 
 
 class questionnaire(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("Question", "QuestionnaireRun")
     object = "Questionnaire"
-    cardinality = "1+"
-    composite = "object"
-
-
-class answers(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
-    inlined = False
-    subject = "Question"
-    object = "Answer"
-    cardinality = "*1"
-    composite = "subject"
+    cardinality = "1*"
 
 
 class question(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Answer", "OpenAnswer")
+    subject = "OpenAnswer"
     object = "Question"
     cardinality = "1*"
 
 
 class questionnaire_run(RelationDefinition):
-    __permissions__ = {
-        'read':   ('managers', 'users', 'guests'),
-        'add':    ('managers',),
-        'delete': ('managers',)}
+    __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Answer", "OpenAnswer")
+    subject = "OpenAnswer"
     object = "QuestionnaireRun"
     cardinality = "1*"
-    composite = "object"
+
+
+class file(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = True
+    subject = "QuestionnaireRun"
+    object = "File"
+    cardinality = "?1"

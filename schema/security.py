@@ -38,7 +38,9 @@ from cubes.brainomics2.schema.questionnaire import Questionnaire
 from cubes.brainomics2.schema.questionnaire import Question
 from cubes.brainomics2.schema.genomics import GenomicMeasure
 from cubes.brainomics2.schema.file import File
+from cubes.brainomics2.schema.file import RestrictedFile
 from cubes.brainomics2.schema.card import Card
+from cubes.rql_download.schema import CWSearch
 
 
 ###############################################################################
@@ -74,12 +76,13 @@ class in_assessment(RelationType):
 RESTRICTED_ENTITIES = [
     Scan, FMRIData, DMRIData, PETData, MRIData, EEGData, ETData, FileSet,
     ExternalFile, ScoreValue, ProcessingRun, QuestionnaireRun, OpenAnswer,
-    GenomicMeasure, File]
+    GenomicMeasure, RestrictedFile]
 
 PUBLIC_ENTITIES = [
     Subject, Center, Study, Questionnaire, Question, Card, CWUser, CWGroup]
 
-ENTITIES = RESTRICTED_ENTITIES + PUBLIC_ENTITIES + [Assessment]
+ENTITIES = RESTRICTED_ENTITIES + PUBLIC_ENTITIES + [
+    Assessment, CWSearch, File]
 
 
 PUBLIC_PERMISSIONS = {
@@ -131,7 +134,7 @@ UNTRACK_ENTITIES = ["CWUser", "CWGroup", "CWSource", "Study", "Center",
                     "GenomicPlatform", "Snp", "CWDataImport", "CWProperty",
                     "Workflow", "State", "BaseTransition", "Transition",
                     "Card"]
-UNTRACK_ENTITIES += ["Assessment"]
+UNTRACK_ENTITIES += ["Assessment", "CWSearch", "File"]
 
 
 # Set known entities permissions

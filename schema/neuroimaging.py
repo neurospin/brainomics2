@@ -17,7 +17,7 @@ from yams.buildobjs import BigInt
 from yams.buildobjs import Bytes
 
 
-SCAN_DATA = ('MRIData', 'DMRIData', 'FMRIData', 'EEGData', 'ETData', 'PETData')
+SCAN_DATA = ("MRIData", "DMRIData", "FMRIData", "EEGData", "ETData", "PETData")
 
 
 class Scan(EntityType):

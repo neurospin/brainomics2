@@ -36,13 +36,15 @@ class Study(EntityType):
     """ The project """
     name = String(required=True, indexed=True, maxsize=256)
     description = RichString(fulltextindexed=True)
+    data_filepath = String()
 
 
 class SubjectGroup(EntityType):
     """ Group of subject """
     identifier = String(required=True, unique=True, maxsize=64)
     name = String(maxsize=64, required=True, indexed=False)
-    type = String(maxsize=64, required=True, vocabulary=[u'family', u'schedule'])
+    type = String(maxsize=64, required=True, 
+                  vocabulary=[u"family", u"schedule"])
 
 
 class Investigator(EntityType):

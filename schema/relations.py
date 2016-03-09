@@ -15,6 +15,9 @@ are not expected to be dynamics.
 from yams.buildobjs import RelationDefinition
 from cubicweb.schema import RRQLExpression
 
+# Local import
+from .neuroimaging import SCAN_DATA
+
 
 RELATION_PERMISSIONS = {
     "read": (
@@ -122,7 +125,7 @@ class scoredefinition_score_values(RelationDefinition):
 class fileset(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("File", "ExternalFile")
+    subject = ("RestrictedFile", "ExternalFile")
     object = "FileSet"
     cardinality = "**"
 
@@ -157,6 +160,22 @@ class diagnostic(RelationDefinition):
     subject = "Subject"
     object = "Diagnostic"
     cardinality = "*+"
+
+
+class has_data(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Scan"
+    object = SCAN_DATA
+    cardinality = "11"
+
+
+class scan(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = SCAN_DATA
+    object = "Scan"
+    cardinality = "11"
 
 
 class scans(RelationDefinition):
@@ -271,6 +290,14 @@ class filesets(RelationDefinition):
     cardinality = "*+"
 
 
+class containers(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "FileSet"
+    object = ("ProcessingRun", "GenomicMeasure", "Scan")
+    cardinality = "+*"
+
+
 class inputs(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
@@ -327,15 +354,6 @@ class genomic_platform(RelationDefinition):
     cardinality = "?*"
 
 
-class has_data(RelationDefinition):
-    __permissions__ = RELATION_PERMISSIONS
-    inlined = False
-    subject = "Scan"
-    object = ("MRIData", "DMRIData", "FMRIData", "EEGData", "ETData",
-              "PETData")
-    cardinality = "?1"
-
-
 class open_answers(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
@@ -388,5 +406,5 @@ class file(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = True
     subject = "QuestionnaireRun"
-    object = "File"
-    cardinality = "?1"
+    object = "RestrictedFile"
+    cardinality = "??"

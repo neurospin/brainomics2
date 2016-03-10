@@ -53,4 +53,3 @@ class GenomicMeasure(EntityType):
 
 class GenomicPlatform(EntityType):
     name = String(required=True, maxsize=64)
-

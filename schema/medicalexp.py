@@ -43,7 +43,7 @@ class SubjectGroup(EntityType):
     """ Group of subject """
     identifier = String(required=True, unique=True, maxsize=64)
     name = String(maxsize=64, required=True, indexed=False)
-    type = String(maxsize=64, required=True, 
+    type = String(maxsize=64, required=True,
                   vocabulary=[u"family", u"schedule"])
 
 

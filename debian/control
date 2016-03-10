@@ -1,0 +1,23 @@
+Source: cubicweb-test
+Section: web
+Priority: optional
+Maintainer: Antoine Grigis <antoine.grigis@cea.fr>
+Build-Depends:
+ debhelper (>= 7),
+ python (>= 2.6.5),
+Standards-Version: 3.9.3
+X-Python-Version: >= 2.6
+
+Package: cubicweb-test
+Architecture: all
+Depends:
+ cubicweb-common (>= 3.19.0),
+ ${python:Depends},
+ ${misc:Depends},
+Description: cubicweb business logic cube for schema definition
+ CubicWeb is a semantic web application framework.
+ .
+ cubicweb business logic cube for schema definition
+ .
+ This package will install all the components you need to run the
+ cubicweb-brainomics2 application (cube :)..

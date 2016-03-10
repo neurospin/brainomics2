@@ -2,7 +2,6 @@
 # pylint: disable=W0142,W0403,W0404,W0613,W0622,W0622,W0704,R0904,C0103,E0611
 #
 # copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
-# copyright 2013 CEA (Saclay, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This file is part of CubicWeb tag cube.
@@ -19,7 +18,6 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along
 # with CubicWeb.  If not, see <http://www.gnu.org/licenses/>.
-
 """Generic Setup script, takes package info from __pkginfo__.py file
 """
 __docformat__ = "restructuredtext en"
@@ -152,7 +150,7 @@ if USE_SETUPTOOLS:
             old_install_data.run(self)
             self.install_dir = _old_install_dir
     try:
-        import setuptools.command.easy_install # only if easy_install avaible
+        import setuptools.command.easy_install # only if easy_install available
         # monkey patch: Crack SandboxViolation verification
         from setuptools.sandbox import DirectorySandbox as DS
         old_ok = DS._ok

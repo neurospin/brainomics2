@@ -8,13 +8,12 @@ numversion = (0, 1, 0)
 version = '.'.join(str(num) for num in numversion)
 
 license = 'LGPL'
-author = 'NeuroSpin'
-author_email = ''
+author = 'CEA'
+author_email = 'antoine.grigis@cea.fr'
 description = 'cubicweb business logic cube for schema definition'
 web = 'http://www.cubicweb.org/project/%s' % distname
 
-__depends__ =  {'cubicweb': '>= 3.19.0',
-                'cubicweb-container': '>= 2.4.0'}
+__depends__ =  {'cubicweb': '>= 3.19.0'}
 __recommends__ = {}
 
 classifiers = [

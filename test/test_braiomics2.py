@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""cubicweb-test automatic tests
+"""cubicweb-brainomics2 automatic tests
 
 
 uncomment code below if you want to activate automatic test for your cube:
@@ -38,6 +38,7 @@ uncomment code below if you want to activate automatic test for your cube:
 """
 
 from cubicweb.devtools import testlib
+
 
 class DefaultTC(testlib.CubicWebTC):
     def test_something(self):

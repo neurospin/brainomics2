@@ -13,7 +13,7 @@ author_email = 'antoine.grigis@cea.fr'
 description = 'cubicweb business logic cube for schema definition'
 web = 'https://github.com/neurospin/brainomics2'
 
-__depends__ =  {'cubicweb': '>= 3.19.0'}
+__depends__ = {'cubicweb': '>= 3.19.0'}
 __recommends__ = {}
 
 classifiers = [

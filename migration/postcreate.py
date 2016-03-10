@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# contact http://www.logilab.fr
+# copyright 2016 CEA, all rights reserved.
+# contact http://i2bm.cea.fr/drf/i2bm/NeuroSpin -- mailto:antoine.grigis@cea.fr
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the Free
@@ -13,9 +14,6 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
-# copyright 2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
-# copyright 2013 CEA (Saclay, FRANCE), all rights reserved.
-# contact http://www.logilab.fr -- mailto:contact@logilab.fr
 
 """cubicweb-brainomics2 postcreate script, executed at instance creation time or when
 the cube is added to an existing instance.
@@ -23,5 +21,5 @@ the cube is added to an existing instance.
 You could setup site properties or a workflow here for example.
 """
 
-# Change the site name
-set_property("ui.site-title", "Brainomics2")
+# Example of site property change
+set_property('ui.site-title', "Brainomics2")

@@ -4,7 +4,7 @@
 # copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
-# This file is part of CubicWeb brainomics2.
+# This file is part of CubicWeb.
 #
 # CubicWeb is free software: you can redistribute it and/or modify it under the
 # terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@ __docformat__ = "restructuredtext en"
 import os
 import sys
 import shutil
-from os.path import isdir, exists, join, walk
+from os.path import exists, join, walk
 
 try:
     if os.environ.get('NO_SETUPTOOLS'):

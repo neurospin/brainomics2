@@ -11,7 +11,7 @@ license = 'LGPL'
 author = 'CEA'
 author_email = 'antoine.grigis@cea.fr'
 description = 'cubicweb business logic cube for schema definition'
-web = 'http://www.cubicweb.org/project/%s' % distname
+web = 'https://github.com/neurospin/brainomics2'
 
 __depends__ =  {'cubicweb': '>= 3.19.0'}
 __recommends__ = {}

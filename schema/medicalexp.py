@@ -99,6 +99,7 @@ class Assessment(EntityType):
 
 class ProcessingRun(EntityType):
     identifier = String(required=True, maxsize=128, unique=True)
+    type = String(maxsize=256, required=True)
     label = String(maxsize=256)
     tool = String(maxsize=256)
     datetime = Date()

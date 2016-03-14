@@ -13,6 +13,7 @@ are not expected to be dynamics.
 
 # Cubicweb import
 from yams.buildobjs import RelationDefinition
+from yams.buildobjs import SubjectRelation
 from cubicweb.schema import RRQLExpression
 
 # Local import
@@ -162,20 +163,20 @@ class diagnostic(RelationDefinition):
     cardinality = "*+"
 
 
-class has_data(RelationDefinition):
-    __permissions__ = RELATION_PERMISSIONS
-    inlined = False
-    subject = "Scan"
-    object = SCAN_DATA
-    cardinality = "11"
-
-
 class scan(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = SCAN_DATA
     object = "Scan"
-    cardinality = "11"
+    cardinality = "1*"
+
+
+class has_data(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Scan"
+    object = SCAN_DATA
+    cardinality = "*1"
 
 
 class scans(RelationDefinition):

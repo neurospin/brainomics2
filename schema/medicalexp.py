@@ -84,10 +84,9 @@ class Protocol(EntityType):
 
 
 class Diagnostic(EntityType):
-    """ Diagnostic attributes and links.
-    Diagnostic may be based on specific measures, and holds a conclusion
-    on BodyLocation/Disease """
+    """ Diagnostic attributes """
     age_at_diagnosis = Int()
+    conclusion = String(maxsize=256, fulltextindexed=True)
 
 
 class Assessment(EntityType):

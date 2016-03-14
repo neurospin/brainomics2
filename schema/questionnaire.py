@@ -46,4 +46,3 @@ class Answer(EntityType):
 class OpenAnswer(EntityType):
     value = String(required=True)
     identifier = String(maxsize=64, indexed=True, unique=True)
-

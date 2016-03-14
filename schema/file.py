@@ -43,4 +43,3 @@ class RestrictedFile(EntityType):
     description = RichString(
         fulltextindexed=True, internationalizable=True,
         default_format='text/rest')
-

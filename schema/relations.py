@@ -17,7 +17,7 @@ from yams.buildobjs import SubjectRelation
 from cubicweb.schema import RRQLExpression
 
 # Local import
-from brainomics2.schema.neuroimaging import SCAN_DATA
+from cubes.brainomics2.schema.neuroimaging import SCAN_DATA
 
 
 RELATION_PERMISSIONS = {

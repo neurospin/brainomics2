@@ -43,9 +43,9 @@ class GenomicMeasure(EntityType):
     """ A genomic measure """
     type = String(maxsize=256, required=True, indexed=True)
     format = String(maxsize=128, indexed=True)
-    chip_serialnum = Int()
+    chip_serial_number = Int()
     completed = Boolean(indexed=True)
-    chromset = String(maxsize=64)
+    chromosome_set = String(maxsize=64)
     valid = Boolean(indexed=True)
     identifier = String(maxsize=128, fulltextindexed=True)
     label = String(maxsize=64)

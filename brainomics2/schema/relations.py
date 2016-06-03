@@ -211,6 +211,22 @@ class center(RelationDefinition):
     cardinality = "**"
 
 
+class device(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Assessment"
+    object = "Device"
+    cardinality = "?*"
+
+
+class device_assessments(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Device"
+    object = "Assessment"
+    cardinality = "*?"
+
+
 class genomic_measures(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
@@ -286,7 +302,7 @@ class subject_processing_runs(RelationDefinition):
 class filesets(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("ProcessingRun", "GenomicMeasure", "Scan")
+    subject = ("ProcessingRun", "GenomicMeasure", "Scan", "Device")
     object = "FileSet"
     cardinality = "*+"
 
@@ -295,7 +311,7 @@ class containers(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "FileSet"
-    object = ("ProcessingRun", "GenomicMeasure", "Scan")
+    object = ("ProcessingRun", "GenomicMeasure", "Scan", "Device")
     cardinality = "+*"
 
 

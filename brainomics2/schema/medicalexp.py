@@ -69,7 +69,7 @@ class Center(EntityType):
 class Device(EntityType):
     """ Device used in experiments/assessments """
     identifier = String(required=True, unique=True, maxsize=64)
-    name = String(maxsize=256, required=True)
+    name = String(maxsize=256)
     manufacturer = String(maxsize=256)
     model = String(maxsize=256)
     serialnum = String(maxsize=256)
@@ -91,13 +91,13 @@ class Diagnostic(EntityType):
 
 class Assessment(EntityType):
     """ Store information about a visit """
-    identifier = String(required=True, maxsize=128, unique=True)
+    identifier = String(required=True, maxsize=256, unique=True)
     age_of_subject = Float(indexed=True)
     timepoint = String(maxsize=64, indexed=True)
 
 
 class ProcessingRun(EntityType):
-    identifier = String(required=True, maxsize=128, unique=True)
+    identifier = String(required=True, maxsize=256, unique=True)
     type = String(maxsize=256, required=True)
     label = String(maxsize=256)
     tool = String(maxsize=256)
@@ -109,7 +109,7 @@ class ProcessingRun(EntityType):
 
 
 class FileSet(EntityType):
-    identifier = String(required=True,  maxsize=128, unique=True)
+    identifier = String(required=True,  maxsize=256, unique=True)
     name = String(maxsize=256, required=True)
 
 
@@ -118,7 +118,7 @@ class ExternalFile(EntityType):
 
     If not absolute_path, use the data_filepath of the study
     """
-    identifier = String(required=True, maxsize=128, unique=True)
+    identifier = String(required=True, maxsize=256, unique=True)
     name = String(maxsize=256)
     absolute_path = Boolean(default=True)
     filepath = String(required=True, indexed=True, maxsize=256)

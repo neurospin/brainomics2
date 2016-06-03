@@ -4,7 +4,7 @@
 modname = 'brainomics2'
 distname = 'cubicweb-brainomics2'
 
-numversion = (1, 0, 0)
+numversion = (1, 1, 0)
 version = '.'.join(str(num) for num in numversion)
 
 license = 'LGPL'
@@ -13,7 +13,9 @@ author_email = 'antoine.grigis@cea.fr'
 description = 'cubicweb business logic cube for schema definition'
 web = 'https://github.com/neurospin/brainomics2'
 
-__depends__ = {'cubicweb': '>= 3.19.0'}
+__depends__ = {
+    'cubicweb': '>= 3.20.9'
+}
 __recommends__ = {}
 
 classifiers = [

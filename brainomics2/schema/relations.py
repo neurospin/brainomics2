@@ -344,7 +344,7 @@ class chromosome(RelationDefinition):
     inlined = False
     subject = "Snp"
     object = "Chromosome"
-    cardinality = "++"
+    cardinality = "**"
 
 
 class snps(RelationDefinition):

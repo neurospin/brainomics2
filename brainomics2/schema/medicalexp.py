@@ -41,10 +41,7 @@ class Study(EntityType):
 
 class SubjectGroup(EntityType):
     """ Group of subject """
-    identifier = String(required=True, unique=True, maxsize=64)
-    name = String(maxsize=64, required=True, indexed=False)
-    type = String(maxsize=64, required=True,
-                  vocabulary=[u"family", u"schedule"])
+    name = String(maxsize=64, required=True, unique=True)
 
 
 class Investigator(EntityType):
@@ -79,14 +76,12 @@ class Device(EntityType):
 
 class Protocol(EntityType):
     """ A protocol for a study or a measure """
-    identifier = String(required=True, unique=True, maxsize=64)
     name = String(maxsize=256, required=True, unique=True)
 
 
 class Diagnostic(EntityType):
     """ Diagnostic attributes """
-    age_at_diagnosis = Int()
-    conclusion = String(maxsize=256, fulltextindexed=True)
+    conclusion = String(maxsize=256, required=True, unique=True)
 
 
 class Assessment(EntityType):

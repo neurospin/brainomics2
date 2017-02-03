@@ -17,7 +17,8 @@ from yams.buildobjs import BigInt
 from yams.buildobjs import Bytes
 
 
-SCAN_DATA = ("MRIData", "DMRIData", "FMRIData", "EEGData", "ETData", "PETData")
+SCAN_DATA = ("MRIData", "DMRIData", "FMRIData", "EEGData", "ETData", "PETData",
+             "SPECTROData")
 
 
 class Scan(EntityType):
@@ -26,6 +27,7 @@ class Scan(EntityType):
     type = String(maxsize=256, required=True, indexed=True)
     number = Int(indexed=False)
     format = String(maxsize=128, indexed=True)
+    description = String(maxsize=64)
 
 
 class MRIData(EntityType):
@@ -82,6 +84,10 @@ class EEGData(EntityType):
 
 class ETData(EntityType):
     duration = String()
+
+
+class SPECTROData(EntityType):
+    description = String()
 
 
 class PETData(EntityType):

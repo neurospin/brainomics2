@@ -57,6 +57,16 @@ class study_questionnaire_runs(RelationDefinition):
     cardinality = "*1"
 
 
+# Subject
+
+class subject_protocol(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Subject"
+    object = "Protocol"
+    cardinality = "?*"
+
+
 class subject_questionnaire_runs(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
@@ -77,7 +87,8 @@ class subjects(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = ("GenomicMeasure", "Study", "ProcessingRun",
-               "SubjectGroup", "Center", "Assessment")
+               "SubjectGroup", "Center", "Assessment", "Diagnostic",
+               "Protocol")
     object = "Subject"
     cardinality = "**"
 
@@ -85,7 +96,7 @@ class subjects(RelationDefinition):
 class subject(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("QuestionnaireRun", "Diagnostic", "Scan")
+    subject = ("QuestionnaireRun", "Scan")
     object = "Subject"
     cardinality = "+*"
 
@@ -323,36 +334,74 @@ class inputs(RelationDefinition):
     cardinality = "**"
 
 
-class genes(RelationDefinition):
+# Chromosome
+
+class chromosome_genes(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Chromosome"
     object = "Gene"
-    cardinality = "++"
+    cardinality = "*1"
 
 
-class chromosomes(RelationDefinition):
+class chromosome_snps(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Chromosome"
+    object = "Snp"
+    cardinality = "*?" # *1
+
+
+class chromosome_cpgs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Chromosome"
+    object = "CpG"
+    cardinality = "*1"
+
+
+# Gene
+
+class gene_chromosome(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Gene"
     object = "Chromosome"
-    cardinality = "++"
+    cardinality = "1*"
 
 
-class chromosome(RelationDefinition):
+class gene_snps(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Gene"
+    object = "Snp"
+    cardinality = "**"
+
+
+class gene_cpgs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Gene"
+    object = "CpG"
+    cardinality = "**"
+
+
+# Snp
+
+class snp_chromosome(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Snp"
     object = "Chromosome"
-    cardinality = "**"
+    cardinality = "?*" # 1*
 
 
-class snps(RelationDefinition):
+class snp_genes(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = "GenomicPlatform"
-    object = "Snp"
-    cardinality = "*+"
+    subject = "Snp"
+    object = "Gene"
+    cardinality = "**"
 
 
 class genomic_platforms(RelationDefinition):
@@ -361,6 +410,35 @@ class genomic_platforms(RelationDefinition):
     subject = "Snp"
     object = "GenomicPlatform"
     cardinality = "**"
+
+
+# CpG
+
+class cpg_chromosome(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "CpG"
+    object = "Chromosome"
+    cardinality = "1*"
+
+
+class cpg_genes(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "CpG"
+    object = "Gene"
+    cardinality = "**"
+
+
+# GenomicPlatform
+
+class snps(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "GenomicPlatform"
+    object = "Snp"
+    cardinality = "**"
+
 
 
 class genomic_platform(RelationDefinition):

@@ -26,17 +26,27 @@ class Chromosome(EntityType):
 
 class Gene(EntityType):
     """ Gene definition """
-    name = String(maxsize=256, fulltextindexed=True, indexed=True)
+    hgnc_id = String(maxsize=256, fulltextindexed=True, indexed=True,
+                     unique=True)
     gene_id = String(maxsize=256, required=True, indexed=True)
     uri = String(maxsize=256, indexed=True)
-    start_position = Int(indexed=True)
-    stop_position = Int(indexed=True)
+    start_position = BigInt(indexed=True)
+    end_position = BigInt(indexed=True)
+    type = String(required=True, indexed=True, unique=False, maxsize=22)
 
 
 class Snp(EntityType):
     """ SNP definition """
-    rs_id = String(required=True, unique=True, maxsize=16)
-    position = BigInt(required=True, indexed=True)
+    rs_id = String(required=True, unique=True, maxsize=24)
+    start_position = BigInt(required=True)
+    end_position = BigInt(required=True)
+    maf = Float(required=True) # minor allele frequency
+
+
+class CpG(EntityType):
+    """ Epigenetic methylation loci """
+    cg_id = String(required=True, unique=True, maxsize=24)
+    position = BigInt(required=True)
 
 
 class GenomicMeasure(EntityType):

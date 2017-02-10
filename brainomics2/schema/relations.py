@@ -18,6 +18,7 @@ from cubicweb.schema import RRQLExpression
 
 # Local import
 from cubes.brainomics2.schema.neuroimaging import SCAN_DATA
+from cubes.rql_upload.schema import UPLOAD_RELATION_PERMISSIONS
 
 
 RELATION_PERMISSIONS = {
@@ -84,7 +85,7 @@ class external_files(RelationDefinition):
 
 
 class subjects(RelationDefinition):
-    __permissions__ = RELATION_PERMISSIONS
+    __permissions__ = UPLOAD_RELATION_PERMISSIONS
     inlined = False
     subject = ("GenomicMeasure", "Study", "ProcessingRun",
                "SubjectGroup", "Center", "Assessment", "Diagnostic",
@@ -102,7 +103,7 @@ class subject(RelationDefinition):
 
 
 class study(RelationDefinition):
-    __permissions__ = RELATION_PERMISSIONS
+    __permissions__ = UPLOAD_RELATION_PERMISSIONS
     inlined = False
     subject = ("Subject", "SubjectGroup", "Protocol", "Assessment",
                "ProcessingRun", "Scan", "QuestionnaireRun", "GenomicMeasure")

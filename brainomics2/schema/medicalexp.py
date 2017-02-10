@@ -23,7 +23,7 @@ class Subject(EntityType):
         required=True, unique=True, fulltextindexed=True, indexed=True,
         maxsize=64)
     identifier = String(required=True, maxsize=128, unique=True)
-    surname = String(fulltextindexed=True, maxsize=256)
+    surname = String(maxsize=256)
     gender = String(
         required=True, indexed=True, vocabulary=('male', 'female', 'unknown'))
     handedness = String(
@@ -34,7 +34,7 @@ class Subject(EntityType):
 
 class Study(EntityType):
     """ The project """
-    name = String(required=True, indexed=True, maxsize=256)
+    name = String(required=True, indexed=True, maxsize=256, unique=True)
     description = RichString(fulltextindexed=True)
     data_filepath = String()
 

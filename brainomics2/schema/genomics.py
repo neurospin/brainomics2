@@ -9,13 +9,10 @@
 
 from yams.buildobjs import EntityType
 from yams.buildobjs import String
-from yams.buildobjs import RichString
 from yams.buildobjs import Int
 from yams.buildobjs import Float
-from yams.buildobjs import Date
 from yams.buildobjs import Boolean
 from yams.buildobjs import BigInt
-from yams.buildobjs import Bytes
 
 
 class Chromosome(EntityType):
@@ -26,13 +23,13 @@ class Chromosome(EntityType):
 
 class Gene(EntityType):
     """ Gene definition """
-    hgnc_id = String(maxsize=256, fulltextindexed=True, indexed=True,
-                     unique=True)
+    hgnc_name = String(maxsize=256, fulltextindexed=True, indexed=True,
+                       unique=True)
     gene_id = String(maxsize=256, required=True, indexed=True)
     uri = String(maxsize=256, indexed=True)
     start_position = BigInt(indexed=True)
     end_position = BigInt(indexed=True)
-    type = String(required=True, indexed=True, unique=False, maxsize=22)
+    gene_type = String(required=True, indexed=True, unique=False, maxsize=34)
 
 
 class Snp(EntityType):
@@ -40,13 +37,20 @@ class Snp(EntityType):
     rs_id = String(required=True, unique=True, maxsize=24)
     start_position = BigInt(required=True)
     end_position = BigInt(required=True)
-    maf = Float(required=True) # minor allele frequency
+    maf = Float(required=True)  # minor allele frequency
 
 
 class CpG(EntityType):
     """ Epigenetic methylation loci """
     cg_id = String(required=True, unique=True, maxsize=24)
     position = BigInt(required=True)
+
+
+class CpGIsland(EntityType):
+    """ CpG island: genomic region with many CpGs """
+    cpg_island_id = String(required=True, unique=True, maxsize=32)
+    start_position = BigInt(required=True)
+    end_position = BigInt(required=True)
 
 
 class GenomicMeasure(EntityType):

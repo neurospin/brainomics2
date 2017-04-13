@@ -450,19 +450,53 @@ class genomic_platform(RelationDefinition):
     cardinality = "?*"
 
 
-class open_answers(RelationDefinition):
+# Questionnaire
+
+class text_answers(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "QuestionnaireRun"
-    object = "OpenAnswer"
+    object = "TextAnswer"
     cardinality = "*1"
 
 
-class question_open_answers(RelationDefinition):
+class int_answers(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "QuestionnaireRun"
+    object = "IntAnswer"
+    cardinality = "*1"
+
+
+class float_answers(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "QuestionnaireRun"
+    object = "FloatAnswer"
+    cardinality = "*1"
+
+
+class question_text_answers(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
     subject = "Question"
-    object = "OpenAnswer"
+    object = "TextAnswer"
+    cardinality = "*1"
+
+
+class question_int_answers(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Question"
+    object = "IntAnswer"
+    cardinality = "*1"
+
+
+class question_float_answers(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Question"
+    object = "FloatAnswer"
     cardinality = "*1"
 
 
@@ -485,7 +519,7 @@ class questionnaire(RelationDefinition):
 class question(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = "OpenAnswer"
+    subject = ("TextAnswer", "IntAnswer", "FloatAnswer")
     object = "Question"
     cardinality = "1*"
 
@@ -493,7 +527,7 @@ class question(RelationDefinition):
 class questionnaire_run(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = "OpenAnswer"
+    subject = ("TextAnswer", "IntAnswer", "FloatAnswer")
     object = "QuestionnaireRun"
     cardinality = "1*"
 

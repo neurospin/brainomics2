@@ -290,7 +290,7 @@ class protocol(RelationDefinition):
 class processing_runs(RelationDefinition):
     __permissions__ = RELATION_PERMISSIONS
     inlined = False
-    subject = ("Assessment", "GenomicMeasure", "Scan")
+    subject = ("Assessment", "GenomicMeasure", "Scan", "ProcessingRun")
     object = "ProcessingRun"
     cardinality = "**"
 

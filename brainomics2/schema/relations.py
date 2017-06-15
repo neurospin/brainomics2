@@ -350,7 +350,7 @@ class chromosome_snps(RelationDefinition):
     inlined = False
     subject = "Chromosome"
     object = "Snp"
-    cardinality = "*?" # *1
+    cardinality = "*?"  # *1
 
 
 class chromosome_cpgs(RelationDefinition):
@@ -358,6 +358,14 @@ class chromosome_cpgs(RelationDefinition):
     inlined = False
     subject = "Chromosome"
     object = "CpG"
+    cardinality = "*1"
+
+
+class chromosome_cpg_islands(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Chromosome"
+    object = "CpGIsland"
     cardinality = "*1"
 
 
@@ -394,7 +402,7 @@ class snp_chromosome(RelationDefinition):
     inlined = False
     subject = "Snp"
     object = "Chromosome"
-    cardinality = "?*" # 1*
+    cardinality = "?*"  # 1*
 
 
 class snp_genes(RelationDefinition):
@@ -431,6 +439,32 @@ class cpg_genes(RelationDefinition):
     cardinality = "**"
 
 
+class cpg_cpg_island(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "CpG"
+    object = "CpGIsland"
+    cardinality = "?*"
+
+
+# CpGIsland
+
+class cpg_island_chromosome(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "CpGIsland"
+    object = "Chromosome"
+    cardinality = "1*"
+
+
+class cpg_island_cpgs(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "CpGIsland"
+    object = "CpG"
+    cardinality = "*?"
+
+
 # GenomicPlatform
 
 class snps(RelationDefinition):
@@ -439,7 +473,6 @@ class snps(RelationDefinition):
     subject = "GenomicPlatform"
     object = "Snp"
     cardinality = "**"
-
 
 
 class genomic_platform(RelationDefinition):

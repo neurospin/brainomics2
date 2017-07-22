@@ -11,10 +11,6 @@ from yams.buildobjs import String
 from yams.buildobjs import RichString
 from yams.buildobjs import Int
 from yams.buildobjs import Float
-from yams.buildobjs import Date
-from yams.buildobjs import Boolean
-from yams.buildobjs import BigInt
-from yams.buildobjs import Bytes
 
 
 ANSWERS_RTYPE = ("text", "int", "float")

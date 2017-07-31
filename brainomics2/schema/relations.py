@@ -395,6 +395,14 @@ class gene_cpgs(RelationDefinition):
     cardinality = "**"
 
 
+class gene_cpg_islands(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Gene"
+    object = "CpGIsland"
+    cardinality = "**"
+
+
 # Snp
 
 class snp_chromosome(RelationDefinition):
@@ -464,6 +472,12 @@ class cpg_island_cpgs(RelationDefinition):
     object = "CpG"
     cardinality = "*?"
 
+class cpg_island_genes(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "CpGIsland"
+    object = "Gene"
+    cardinality = "**"
 
 # GenomicPlatform
 

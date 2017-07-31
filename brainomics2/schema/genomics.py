@@ -52,6 +52,12 @@ class CpGIsland(EntityType):
     end_position = BigInt(required=True)
 
 
+class Pathway(EntityType):
+    """ Pathway: set of genes """
+    name = String(required=True, unique=True, maxsize=192)
+    uri = String(required=True, unique=True, maxsize=240)
+
+
 class GenomicMeasure(EntityType):
     """ A genomic measure """
     type = String(maxsize=256, required=True, indexed=True)

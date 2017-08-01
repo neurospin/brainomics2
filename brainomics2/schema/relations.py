@@ -13,7 +13,6 @@ are not expected to be dynamics.
 
 # Cubicweb import
 from yams.buildobjs import RelationDefinition
-from yams.buildobjs import SubjectRelation
 from cubicweb.schema import RRQLExpression
 
 # Local import

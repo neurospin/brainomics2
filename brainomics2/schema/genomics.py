@@ -54,8 +54,8 @@ class CpGIsland(EntityType):
 
 class Pathway(EntityType):
     """ Pathway: set of genes """
-    name = String(required=True, unique=True, maxsize=192)
-    uri = String(required=True, unique=True, maxsize=240)
+    name = String(required=True, unique=True, maxsize=256)
+    uri = String(required=True, unique=True, maxsize=256)
 
 
 class GenomicMeasure(EntityType):

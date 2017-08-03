@@ -394,6 +394,32 @@ class gene_cpgs(RelationDefinition):
     cardinality = "**"
 
 
+class gene_cpg_islands(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Gene"
+    object = "CpGIsland"
+    cardinality = "**"
+
+
+class gene_pathways(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Gene"
+    object = "Pathway"
+    cardinality = "*+"
+
+
+# Pathway
+
+class pathway_genes(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "Pathway"
+    object = "Gene"
+    cardinality = "+*"
+
+
 # Snp
 
 class snp_chromosome(RelationDefinition):
@@ -462,6 +488,14 @@ class cpg_island_cpgs(RelationDefinition):
     subject = "CpGIsland"
     object = "CpG"
     cardinality = "*?"
+
+
+class cpg_island_genes(RelationDefinition):
+    __permissions__ = RELATION_PERMISSIONS
+    inlined = False
+    subject = "CpGIsland"
+    object = "Gene"
+    cardinality = "**"
 
 
 # GenomicPlatform

@@ -35,8 +35,7 @@ class Gene(EntityType):
 class Snp(EntityType):
     """ SNP definition """
     rs_id = String(required=True, unique=True, maxsize=24)
-    start_position = BigInt(required=True)
-    end_position = BigInt(required=True)
+    position = BigInt(required=True)
     maf = Float(required=True)  # minor allele frequency
 
 
@@ -51,6 +50,12 @@ class CpGIsland(EntityType):
     cpg_island_id = String(required=True, unique=True, maxsize=32)
     start_position = BigInt(required=True)
     end_position = BigInt(required=True)
+
+
+class Pathway(EntityType):
+    """ Pathway: set of genes """
+    name = String(required=True, unique=True, maxsize=256)
+    uri = String(required=True, unique=True, maxsize=256)
 
 
 class GenomicMeasure(EntityType):

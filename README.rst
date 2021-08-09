@@ -16,7 +16,7 @@ used by `PIWS <https://github.com/neurospin/piws>`_.
 Content
 =======
 
-This cube merely extends the schema forked from the cubes developped by the
+This cube merely extends the schema forked from the cubes developed by the
 `Brainomics <http://www.brainomics.net>`_ project:
 
 * `cubicweb-brainomics <https://www.cubicweb.org/project/cubicweb-brainomics>`_

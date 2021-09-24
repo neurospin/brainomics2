@@ -66,9 +66,9 @@ class Device(EntityType):
     name = String(maxsize=256)
     manufacturer = String(maxsize=256)
     model = String(maxsize=256)
-    serialnum = String(maxsize=256)
+    serial_number = String(maxsize=256)
     software_version = String(maxsize=128)
-    configurations = RichString(fulltextindexed=True)
+    configuration = RichString(fulltextindexed=True)
 
 
 class Protocol(EntityType):
